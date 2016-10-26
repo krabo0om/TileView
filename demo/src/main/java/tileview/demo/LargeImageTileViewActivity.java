@@ -1,8 +1,13 @@
 package tileview.demo;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Toast;
 
 import com.qozix.tileview.TileView;
+import com.qozix.tileview.hotspots.HotSpot;
+import com.qozix.tileview.widgets.ZoomPanLayout;
 
 public class LargeImageTileViewActivity extends TileViewActivity {
 
@@ -12,14 +17,16 @@ public class LargeImageTileViewActivity extends TileViewActivity {
 		super.onCreate( savedInstanceState );
 		
 		// multiple references
-		TileView tileView = getTileView();
+		final TileView tileView = getTileView();
 
-		// let the image explode
-		tileView.setScaleLimits( 0, 2 );
-		
 		// size of original image at 100% mScale
-		tileView.setSize( 2835, 4289 );
-		
+		// but made short to better demonstrate the size of the MarkerLayout
+		tileView.setSize( 2835, 3000 );
+
+		tileView.setMinimumScaleMode( ZoomPanLayout.MinimumScaleMode.FIT );
+
+		tileView.addHotSpot( createHotSpot( 2835, 3000 ) );
+
 		// detail levels
 		tileView.addDetailLevel( 1.000f, "tiles/painting/1000/%d_%d.jpg");
 		tileView.addDetailLevel( 0.500f, "tiles/painting/500/%d_%d.jpg");
@@ -29,16 +36,34 @@ public class LargeImageTileViewActivity extends TileViewActivity {
 		// set mScale to 0, but keep scaleToFit true, so it'll be as small as possible but still match the container
 		tileView.setScale( 0 );
 		
-		// let's use 0-1 positioning...
-		tileView.defineBounds( 0, 0, 1, 1 );
-		
-		// frame to center
-		frameTo( 0.5, 0.5 );
-
 		// render while panning
 		tileView.setShouldRenderWhilePanning( true );
 
 		// disallow going back to minimum scale while double-taping at maximum scale (for demo purpose)
 		tileView.setShouldLoopScale( false );
+	}
+
+	private HotSpot createHotSpot( int width, int height ) {
+		HotSpot hotSpot = new HotSpot();
+		hotSpot.setHotSpotTapListener( new HotSpot.HotSpotTapListener() {
+			@Override
+			public void onHotSpotTap( HotSpot hotSpot, int x, int y ) {
+				getTileView().addCallout( createCallOut(), x / getTileView().getScale(), y / getTileView().getScale(), -0.5f, -1f );
+			}
+		} );
+
+		hotSpot.set( 0, 0, width, height );
+		return hotSpot;
+	}
+
+	private View createCallOut() {
+		View v = ((LayoutInflater) getSystemService( LAYOUT_INFLATER_SERVICE )).inflate( R.layout.callout, null );
+		v.findViewById( R.id.btn ).setOnClickListener( new View.OnClickListener() {
+			@Override
+			public void onClick( View v ) {
+				Toast.makeText( LargeImageTileViewActivity.this, "tapped button", Toast.LENGTH_SHORT ).show();
+			}
+		} );
+		return v;
 	}
 }
