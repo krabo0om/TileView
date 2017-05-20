@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.qozix.tileview.TileView;
 import com.qozix.tileview.markers.MarkerLayout;
+import com.qozix.tileview.widgets.ZoomPanLayout;
 
 public class BuildingPlansTileViewActivity extends TileViewActivity {
 
@@ -48,13 +49,11 @@ public class BuildingPlansTileViewActivity extends TileViewActivity {
 		addPin( 0.75, 0.25 );
 		addPin( 0.75, 0.75 );
 		addPin( 0.50, 0.50 );
-		
+
+		tileView.setMinimumScaleMode(ZoomPanLayout.MinimumScaleMode.FIT);
+
 		// mScale it down to manageable size
-		tileView.setScale( 0.5f );
-		
-		// center the frame
-		frameTo( 0.5, 0.5 );
-		
+		tileView.setScale( 0.0f );
 	}
 	
 	private void addPin( double x, double y ) {

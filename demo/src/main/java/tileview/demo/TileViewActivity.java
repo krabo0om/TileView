@@ -12,7 +12,7 @@ public class TileViewActivity extends Activity {
 	@Override
 	public void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
-		tileView = new TileView( this );
+		tileView = new ScrollTileView( this );
 
 		/**
 		 * Set an id. This is necessary to enable the save state mechanism of Android.
